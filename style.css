@@ -1,0 +1,1014 @@
+/*
+------------------------------------------------------------
+Desarrollo de Aplicaciones Interactivas
+PR3. Extensión web — Agenda diaria
+Agenda interactiva basada en El mosaico del tiempo.
+Alumna: Amaya Muñoz Azanza
+------------------------------------------------------------
+
+Estilos de la interfaz de la extensión, a partir del diseño
+realizado en Figma Make.
+*/
+
+
+/* Estilos generales */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    width: 420px;
+    height: 600px;
+    margin: 0;
+    padding: 0;
+    background-color: #F4F1E9;
+    color: #202020;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+#agenda,
+#pantallaNuevaCita,
+#pantallaDetalleCita {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 12px 16px 16px;
+}
+
+
+/* Solo mostramos la pantalla que estamos utilizando */
+
+#agenda[hidden],
+#pantallaNuevaCita[hidden],
+#pantallaDetalleCita[hidden] {
+    display: none;
+}
+
+
+/* Tipografía de títulos y encabezados */
+
+h1, h2 {
+    font-family: Georgia, serif;
+    font-weight: bold;
+    margin: 0;
+}
+
+h1 {
+    font-size: 22px;
+    color: #446D4B;
+    text-align: center;
+}
+
+h2 {
+    font-size: 16px;
+}
+
+
+/* Estilo general de los botones */
+
+button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+button:focus-visible {
+    outline: 2px solid #446D4B;
+    outline-offset: 2px;
+}
+
+button:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+
+/* ------------------------------------------------------------
+   PANTALLA PRINCIPAL
+   ------------------------------------------------------------ */
+
+
+/* Cabecera y navegación entre fechas */
+
+header {
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+#navegacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+#fecha {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#diaAnterior,
+#diaSiguiente {
+    background-color: transparent;
+    color: #446D4B;
+    font-size: 15px;
+    padding: 4px 8px;
+}
+
+
+/* Horario de la cita y reloj digital */
+
+#horarios {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    min-height: 16px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+
+/* Espacio reservado para el mosaico de p5.js */
+
+#mosaico {
+    position: relative;
+    width: 388px;
+    height: 276px;
+    flex-shrink: 0;
+    background-color: #FFFFFF;
+}
+
+#mosaico canvas {
+    display: block;
+}
+
+
+/* Capa transparente para los iconos del mosaico */
+
+#capaIconos {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.grupoIconos {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    pointer-events: auto;
+}
+
+.botonIconoMosaico {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    padding: 2px;
+    background-color: transparent;
+    color: #294D3A;
+}
+
+.botonIconoMosaico .iconoCategoria {
+    width: 14px;
+    height: 14px;
+}
+
+.botonIconoMosaico.seleccionado {
+    background-color: #446D4B;
+    color: #FFFFFF;
+}
+
+.botonIconoMosaico.completada {
+    opacity: 0.5;
+}
+
+.botonIconoMosaico.cancelada {
+    opacity: 0.35;
+}
+
+
+/* ------------------------------------------------------------
+   SECCIÓN DE CITAS
+   ------------------------------------------------------------ */
+
+#seccionCitas {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    margin-top: 10px;
+}
+
+#cabeceraCitas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#nuevaCita {
+    background-color: #446D4B;
+    color: #FFFFFF;
+    padding: 7px 10px;
+}
+
+
+/* La lista se desplaza sin mover el resto de la agenda */
+
+#listaCitas {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #A8B8A4 transparent;
+}
+
+
+/* Tarjetas individuales de las citas */
+
+.cita {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 31px;
+    margin-bottom: 4px;
+    padding: 6px 8px;
+    background-color: #FFFFFF;
+    border: 1px solid #D9D9D9;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.seleccionarTarjeta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    background-color: transparent;
+    color: inherit;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+}
+
+.seleccionarTarjeta:hover {
+    opacity: 1;
+}
+
+.iconoCita {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: #446D4B;
+}
+
+.horaCita {
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.tituloCita {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cita:hover {
+    background-color: #E7ECE5;
+}
+
+
+/* Aspecto de la cita seleccionada */
+
+.cita.seleccionada {
+    background-color: #F5F7F4;
+    border: 1px solid #446D4B;
+    border-left: 4px solid #446D4B;
+}
+
+
+/* Citas completadas */
+
+.cita.completada {
+    color: #777777;
+}
+
+.cita.completada .tituloCita,
+.cita.completada .horaCita {
+    text-decoration: line-through;
+}
+
+.cita.completada .iconoCita {
+    color: #A8B8A4;
+}
+
+.marcaCompletada {
+    color: #446D4B;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+/* Citas canceladas */
+
+.cita.cancelada {
+    color: #777777;
+    opacity: 0.6;
+}
+
+.cita.cancelada .tituloCita,
+.cita.cancelada .horaCita {
+    text-decoration: line-through;
+}
+
+.marcaCancelada {
+    color: #777777;
+    font-size: 10px;
+}
+
+
+/* Botón que permite consultar el detalle */
+
+.verDetalle {
+    background-color: transparent;
+    color: #446D4B;
+    font-size: 15px;
+    padding: 3px 6px;
+    flex-shrink: 0;
+}
+
+
+/* Mensaje para los días sin citas */
+
+#agendaVacia {
+    margin: 15px 0;
+    text-align: center;
+    color: #446D4B;
+    font-size: 12px;
+}
+
+
+/* ------------------------------------------------------------
+   PROGRESO DIARIO
+   ------------------------------------------------------------ */
+
+#progresoDiario {
+    flex-shrink: 0;
+    margin-top: 10px;
+}
+
+#textoProgreso {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+#textoProgreso h2 {
+    font-size: 14px;
+}
+
+#contadorCitas {
+    font-size: 10px;
+}
+
+#barraProgreso {
+    display: block;
+    width: 100%;
+    height: 4px;
+    appearance: none;
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+#barraProgreso::-moz-progress-bar {
+    background-color: #A8B8A4;
+    border-radius: 2px;
+}
+
+
+/* ------------------------------------------------------------
+   FORMULARIO DE NUEVA CITA Y EDICIÓN
+   ------------------------------------------------------------ */
+
+.cabeceraFormulario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.cabeceraFormulario button {
+    width: 28px;
+    height: 28px;
+    background-color: transparent;
+    color: #446D4B;
+    font-size: 20px;
+}
+
+
+/* Distribución de los campos del formulario */
+
+#formularioCita {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.campoFormulario {
+    margin-bottom: 12px;
+}
+
+.campoFormulario label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.campoFormulario input,
+.campoFormulario textarea {
+    width: 100%;
+    padding: 10px;
+    background-color: #FFFFFF;
+    color: #202020;
+    border: 1px solid #D9D9D9;
+    border-radius: 3px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+.campoFormulario input {
+    height: 37px;
+}
+
+.campoFormulario input:focus,
+.campoFormulario textarea:focus {
+    outline: none;
+    border-color: #446D4B;
+}
+
+.campoFormulario textarea {
+    display: block;
+    height: 68px;
+    resize: none;
+}
+
+.campoFormulario input::placeholder,
+.campoFormulario textarea::placeholder {
+    color: #999999;
+}
+
+.opcional {
+    color: #777777;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+
+/* Situamos las dos horas una junto a la otra */
+
+.filaHorarios {
+    display: flex;
+    gap: 10px;
+}
+
+.filaHorarios .campoFormulario {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* Categorías distribuidas en dos filas */
+
+#categoriasCita {
+    border: none;
+    margin: 0 0 12px;
+    padding: 0;
+    min-width: 0;
+}
+
+#categoriasCita legend {
+    font-weight: bold;
+    padding: 0;
+    margin-bottom: 8px;
+}
+
+.rejillaCategorias {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.categoria {
+    position: relative;
+    cursor: pointer;
+}
+
+
+/* Los botones de selección se representan mediante tarjetas */
+
+.categoria input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.tarjetaCategoria {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 57px;
+    gap: 5px;
+    background-color: #FFFFFF;
+    color: #446D4B;
+    border: 1px solid #D9D9D9;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.categoria input:checked + .tarjetaCategoria {
+    background-color: #446D4B;
+    border-color: #446D4B;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.categoria input:focus-visible + .tarjetaCategoria {
+    outline: 2px solid #446D4B;
+    outline-offset: 2px;
+}
+
+.tarjetaCategoria:hover {
+    opacity: 0.85;
+}
+
+
+/* ------------------------------------------------------------
+   ICONOS DE LAS CATEGORÍAS
+   ------------------------------------------------------------ */
+
+/* Utilizamos los SVG de Lucide como máscaras para adaptar
+   su color al texto de cada elemento.
+
+   Referencia:
+   https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/mask-image
+*/
+
+.iconoCategoria {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-mode: alpha;
+    flex-shrink: 0;
+}
+
+.iconoTrabajo {
+    mask-image: url('iconos/trabajo.svg');
+}
+
+.iconoEstudios {
+    mask-image: url('iconos/estudios.svg');
+}
+
+.iconoSalud {
+    mask-image: url('iconos/salud.svg');
+}
+
+.iconoReunion {
+    mask-image: url('iconos/reunion.svg');
+}
+
+.iconoOcio {
+    mask-image: url('iconos/ocio.svg');
+}
+
+.iconoPersonal {
+    mask-image: url('iconos/personal.svg');
+}
+
+.iconoCompras {
+    mask-image: url('iconos/compras.svg');
+}
+
+.iconoOtros {
+    mask-image: url('iconos/otros.svg');
+}
+
+
+/* Botones inferiores del formulario */
+
+.botonesFormulario {
+    display: flex;
+    gap: 9px;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.botonPrincipal,
+.botonSecundario {
+    height: 38px;
+    font-size: 12px;
+}
+
+.botonPrincipal {
+    flex: 1.4;
+    background-color: #446D4B;
+    color: #FFFFFF;
+}
+
+.botonSecundario {
+    flex: 1;
+    background-color: transparent;
+    color: #446D4B;
+    border: 1px solid #446D4B;
+}
+
+
+/* Mensajes de errores */
+
+#errorFormulario,
+#errorDetalle {
+    color: #A33B35;
+    font-size: 11px;
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+
+/* ------------------------------------------------------------
+   SELECTORES PERSONALIZADOS DE FECHA Y HORA
+   ------------------------------------------------------------ */
+
+/* Botones que sustituyen los selectores nativos de Firefox */
+
+.contenedorSelector {
+    position: relative;
+}
+
+.contenedorSelector input {
+    padding-right: 32px;
+}
+
+.botonSelector {
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    bottom: 1px;
+    width: 30px;
+    background-color: #FFFFFF;
+    color: #446D4B;
+    font-size: 19px;
+}
+
+
+/* Ventana superpuesta y fondo semitransparente */
+
+.ventanaSelector {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panelSelector {
+    width: 340px;
+    padding: 16px;
+    background-color: #F4F1E9;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.cabeceraSelector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.cabeceraSelector h2 {
+    color: #446D4B;
+}
+
+.cerrarSelector {
+    background-color: transparent;
+    color: #446D4B;
+    font-size: 22px;
+}
+
+.botonOpcion {
+    height: 30px;
+    background-color: #FFFFFF;
+    color: #202020;
+    border: 1px solid #D9D9D9;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.botonOpcion.elegido {
+    background-color: #446D4B;
+    color: #FFFFFF;
+}
+
+
+/* Calendario mensual */
+
+.navegacionCalendario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.navegacionCalendario button {
+    width: 30px;
+}
+
+.nombreMes {
+    text-transform: capitalize;
+}
+
+.calendario {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.nombreDiaCalendario {
+    text-align: center;
+    font-weight: bold;
+    padding: 4px;
+}
+
+
+/* Selector de horas y minutos */
+
+.horaMostrada {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: #446D4B;
+    margin-bottom: 12px;
+}
+
+.columnasHorario {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.columnaHorario {
+    flex: 1;
+}
+
+.etiquetaHorario {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.listaHorario {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.listaHorario button {
+    flex-shrink: 0;
+}
+
+.aceptarHorario {
+    width: 100%;
+    height: 35px;
+    background-color: #446D4B;
+    color: #FFFFFF;
+}
+
+
+/* ------------------------------------------------------------
+   PANTALLA DE DETALLE DE CITA
+   ------------------------------------------------------------ */
+
+.cabeceraDetalle {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+#volverDetalle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    background-color: transparent;
+    color: #446D4B;
+    font-size: 18px;
+}
+
+
+/* Tarjeta con los datos de la cita */
+
+.datosDetalle {
+    background-color: #FFFFFF;
+    border: 1px solid #D9D9D9;
+    border-radius: 3px;
+    padding: 14px;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.tituloDetalle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+}
+
+.tituloDetalle > div:last-child {
+    min-width: 0;
+}
+
+.recuadroIconoDetalle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    background-color: #E7ECE5;
+    border: 1px solid #BDD0C2;
+    border-radius: 3px;
+}
+
+#iconoDetalle {
+    width: 24px;
+    height: 24px;
+    color: #446D4B;
+}
+
+#nombreDetalle {
+    overflow-wrap: anywhere;
+}
+
+#categoriaDetalle {
+    color: #446D4B;
+    margin: 5px 0 0;
+}
+
+.filaDetalle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 0;
+    border-top: 1px solid #E5E5E5;
+}
+
+.filaDetalle > span {
+    width: 70px;
+    flex-shrink: 0;
+    color: #777777;
+}
+
+
+/* Estados de la cita */
+
+#estadoDetalle {
+    padding: 5px 8px;
+    background-color: #E7ECE5;
+    color: #446D4B;
+    border-radius: 3px;
+}
+
+#estadoDetalle.completada {
+    background-color: #446D4B;
+    color: #FFFFFF;
+}
+
+#estadoDetalle.cancelada {
+    background-color: #E7E7E7;
+    color: #777777;
+}
+
+
+/* Notas de la cita */
+
+.notasDetalle {
+    border-top: 1px solid #E5E5E5;
+    padding-top: 12px;
+}
+
+.notasDetalle h3 {
+    font-size: 12px;
+    margin: 0 0 8px;
+}
+
+#notasDetalle {
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-height: 44px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+
+/* Acciones situadas en la parte inferior */
+
+.accionesDetalle {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 8px;
+    flex-shrink: 0;
+}
+
+.accionesDetalle button {
+    flex: none;
+    height: 38px;
+}
+
+.accionesInferiores {
+    display: flex;
+    gap: 8px;
+}
+
+.accionesInferiores button {
+    flex: 1;
+    background-color: #FFFFFF;
+    color: #446D4B;
+    border: 1px solid #D9D9D9;
+}
+
+#eliminarCita {
+    color: #202020;
+}
+
+#completarCita:disabled {
+    background-color: #85A68E;
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+
+/* ------------------------------------------------------------
+   VENTANAS DE CONFIRMACIÓN
+   ------------------------------------------------------------ */
+
+.mensajeConfirmacion {
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 18px 0;
+}
+
+.botonesConfirmacion {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.botonesConfirmacion button {
+    flex: 1;
+    height: 38px;
+}

@@ -1,0 +1,11 @@
+{
+    "manifest_version": 3,
+    "name": "Agenda diaria",
+    "version": "1.0",
+    "author": "Amaya Muñoz Azanza",
+    "description": "Agenda interactiva basada en El mosaico del tiempo.",
+    "action": {
+        "default_title": "Agenda diaria",
+        "default_popup": "index.html"
+    }
+}

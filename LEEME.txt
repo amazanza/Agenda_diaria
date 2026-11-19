@@ -1,0 +1,93 @@
+AGENDA DIARIA
+Extensión para Firefox — PR3: Desarrollo de Aplicaciones Interactivas
+
+Autora: Amaya Muñoz Azanza
+Asignatura: Desarrollo de Aplicaciones Interactivas
+Universitat Oberta de Catalunya (UOC)
+Versión: 1.0
+
+1. DESCRIPCIÓN DEL PROYECTO
+
+Agenda diaria es una extensión para Mozilla Firefox que combina un reloj visual con una agenda de citas y actividades.
+
+El proyecto parte de El mosaico del tiempo, desarrollado en la primera práctica de la asignatura. Hemos adaptado su representación gráfica de las 24 horas para incorporar nuevas posibilidades de interacción y organizar las actividades de cada día.
+
+El mosaico utiliza una pieza de color para cada hora. Los colores cambian de intensidad según el momento del día, mientras que la pieza correspondiente a la hora actual destaca mediante un borde verde. Los minutos se representan con un relleno progresivo y los segundos mediante un pequeño pulso.
+
+Las citas aparecen en una lista y también se identifican mediante iconos dentro del mosaico.
+
+2. FUNCIONALIDADES
+
+La extensión permite:
+
+- Consultar la hora actual y desplazarse entre diferentes fechas.
+- Crear citas con título, fecha, hora de inicio, hora de finalización opcional, categoría y notas.
+- Clasificar las citas en ocho categorías: Trabajo, Estudios, Salud, Reunión, Ocio, Personal, Compras y Otros.
+- Seleccionar citas desde la lista o mediante sus iconos en el mosaico.
+- Consultar los detalles de cada cita y modificar sus datos.
+- Marcar citas como completadas, cancelarlas o eliminarlas.
+- Visualizar el progreso diario mediante una barra que indica la proporción de citas completadas. Las canceladas no se incluyen en el cálculo.
+- Conservar las citas mediante el almacenamiento local del navegador.
+
+Las citas se pueden marcar como completadas en cualquier momento, aunque todavía no haya llegado su hora de finalización.
+
+3. INSTALACIÓN EN FIREFOX
+
+Para probar la extensión como complemento temporal:
+
+1. Descargar y descomprimir la carpeta del proyecto.
+2. Abrir Mozilla Firefox.
+3. Escribir about:debugging#/runtime/this-firefox en la barra de direcciones.
+4. Seleccionar «Cargar complemento temporal».
+5. Buscar el archivo manifest.json dentro de la carpeta Agenda_diaria y abrirlo.
+6. Acceder a la extensión desde el botón correspondiente de Firefox.
+
+La extensión se instala temporalmente para realizar las pruebas. Si se cierra Firefox, puede ser necesario volver a cargarla desde la página de depuración.
+
+No se necesita instalar un servidor local ni descargar bibliotecas adicionales, porque p5.js y los iconos están incluidos en el proyecto.
+
+4. USO DE LA APLICACIÓN
+
+Al abrir la extensión aparece el día actual con el mosaico del tiempo y las citas programadas. Las flechas situadas junto a la fecha permiten consultar otros días.
+
+Para añadir una actividad, pulsamos «+ Nueva cita», cumplimentamos el formulario y guardamos los datos. Los selectores personalizados permiten elegir la fecha y las horas.
+
+Las citas aparecen ordenadas por su hora de inicio. Al seleccionar una, se destaca su tarjeta y el icono correspondiente del mosaico. La flecha situada al final de cada tarjeta permite abrir la pantalla de detalle.
+
+Desde esta pantalla podemos editar los datos, marcar la cita como completada, cancelarla o eliminarla. Las operaciones de cancelación y eliminación requieren confirmación.
+
+5. ESTRUCTURA DE ARCHIVOS
+
+- manifest.json: configuración de la extensión para Firefox.
+- index.html: estructura de las pantallas y sus elementos.
+- style.css: estilos visuales de la interfaz.
+- sketch.js: programación del reloj, la agenda y sus interacciones.
+- librerias/p5.min.js: biblioteca p5.js utilizada por el proyecto.
+- iconos/: archivos SVG de las ocho categorías y documentación de su licencia.
+
+Todos estos archivos y carpetas deben conservar su ubicación relativa para que la extensión funcione correctamente.
+
+6. TECNOLOGÍAS UTILIZADAS
+
+- HTML5: estructura de la interfaz.
+- CSS3: presentación visual, distribución de los elementos e iconos.
+- JavaScript: gestión de citas, fechas, formularios e interacciones.
+- p5.js 2.3.4: dibujo y actualización del mosaico del tiempo.
+- WebExtensions Manifest V3: configuración de la extensión para Firefox.
+- Almacenamiento local: conservación de las citas mediante storeItem() y getItem() de p5.js.
+
+7. RECURSOS Y LICENCIAS
+
+El proyecto incluye la biblioteca p5.js, distribuida bajo licencia LGPL-2.1.
+
+Los iconos SVG utilizados para representar las categorías proceden de Lucide Icons (https://lucide.dev/), distribuidos bajo licencia ISC. Algunos iconos de Lucide derivan del proyecto Feather y están sujetos a los avisos de licencia MIT correspondientes.
+
+El archivo Lucide License.txt recoge los avisos de licencia de estos recursos.
+
+8. AUTORÍA
+
+Amaya Muñoz Azanza
+
+Proyecto académico desarrollado para la asignatura Desarrollo de Aplicaciones Interactivas del Grado en Multimedia de la Universitat Oberta de Catalunya (UOC).
+
+Agenda diaria se ha desarrollado a partir del proyecto propio El mosaico del tiempo, realizado previamente en la misma asignatura.

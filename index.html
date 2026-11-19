@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <!--
+    ------------------------------------------------------------
+    Desarrollo de Aplicaciones Interactivas
+    PR3. Extensión web — Agenda diaria
+    Alumna: Amaya Muñoz Azanza
+    ------------------------------------------------------------
+
+    Estructura de la agenda interactiva basada en
+    El mosaico del tiempo.
+    -->
+
+    <meta charset="UTF-8">
+    <title>Agenda diaria</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- PANTALLA PRINCIPAL -->
+
+    <main id="agenda">
+
+        <header>
+
+            <h1>Agenda diaria</h1>
+
+            <div id="navegacion">
+
+                <button id="diaAnterior"
+                        aria-label="Día anterior">
+                    ❮
+                </button>
+
+                <span id="fecha"></span>
+
+                <button id="diaSiguiente"
+                        aria-label="Día siguiente">
+                    ❯
+                </button>
+
+            </div>
+
+            <!-- Horario de la cita seleccionada y hora actual -->
+
+            <div id="horarios">
+
+                <span id="horaCita"></span>
+                <span id="reloj">00:00:00</span>
+
+            </div>
+
+        </header>
+
+        <!-- Espacio reservado para el mosaico de p5.js -->
+
+        <div id="mosaico"></div>
+
+        <!-- Listado de citas del día -->
+
+        <section id="seccionCitas">
+
+            <div id="cabeceraCitas">
+
+                <h2>Citas del día</h2>
+
+                <button id="nuevaCita">+ Nueva cita</button>
+
+            </div>
+
+            <div id="listaCitas">
+
+                <p id="agendaVacia">
+                    No hay citas programadas para este día.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- Indicador de progreso diario -->
+
+        <footer id="progresoDiario">
+
+            <div id="textoProgreso">
+
+                <h2>Progreso diario</h2>
+
+                <span id="contadorCitas">0 de 0 citas</span>
+
+            </div>
+
+            <progress id="barraProgreso" value="0" max="100">
+            </progress>
+
+        </footer>
+
+    </main>
+
+
+    <!-- PANTALLA DE NUEVA CITA Y EDICIÓN -->
+
+    <section id="pantallaNuevaCita" hidden>
+
+        <header class="cabeceraFormulario">
+
+            <button id="volverAgenda"
+                    type="button"
+                    aria-label="Volver">
+                ❮
+            </button>
+
+            <h1 id="tituloFormulario">Nueva cita</h1>
+
+            <button id="cerrarNuevaCita"
+                    type="button"
+                    aria-label="Cerrar formulario">
+                ×
+            </button>
+
+        </header>
+
+        <form id="formularioCita" novalidate>
+
+            <!-- Datos principales de la cita -->
+
+            <div class="campoFormulario">
+
+                <label for="tituloCita">Título de la cita</label>
+
+                <input type="text"
+                       id="tituloCita"
+                       placeholder="Añade un título"
+                       required>
+
+            </div>
+
+            <div class="campoFormulario">
+
+                <label for="fechaCita">Fecha</label>
+
+                <input type="date"
+                       id="fechaCita"
+                       required>
+
+            </div>
+
+            <!-- Las dos horas se disponen en una misma fila -->
+
+            <div class="filaHorarios">
+
+                <div class="campoFormulario">
+
+                    <label for="horaInicio">Hora de inicio</label>
+
+                    <input type="time"
+                           id="horaInicio"
+                           value="09:00"
+                           required>
+
+                </div>
+
+                <div class="campoFormulario">
+
+                    <label for="horaFin">
+                        Hora de fin
+                        <span class="opcional">(opcional)</span>
+                    </label>
+
+                    <input type="time" id="horaFin">
+
+                </div>
+
+            </div>
+
+            <!-- Selección de una categoría.
+                 Los iconos proceden de Lucide Icons. -->
+
+            <fieldset id="categoriasCita">
+
+                <legend>Categoría</legend>
+
+                <div class="rejillaCategorias">
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Trabajo"
+                               checked>
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoTrabajo"
+                                  aria-hidden="true"></span>
+
+                            Trabajo
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Estudios">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoEstudios"
+                                  aria-hidden="true"></span>
+
+                            Estudios
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Salud">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoSalud"
+                                  aria-hidden="true"></span>
+
+                            Salud
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Reunión">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoReunion"
+                                  aria-hidden="true"></span>
+
+                            Reunión
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Ocio">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoOcio"
+                                  aria-hidden="true"></span>
+
+                            Ocio
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Personal">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoPersonal"
+                                  aria-hidden="true"></span>
+
+                            Personal
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Compras">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoCompras"
+                                  aria-hidden="true"></span>
+
+                            Compras
+
+                        </span>
+
+                    </label>
+
+                    <label class="categoria">
+
+                        <input type="radio"
+                               name="categoria"
+                               value="Otros">
+
+                        <span class="tarjetaCategoria">
+
+                            <span class="iconoCategoria iconoOtros"
+                                  aria-hidden="true"></span>
+
+                            Otros
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </fieldset>
+
+            <!-- Información adicional de la cita -->
+
+            <div class="campoFormulario">
+
+                <label for="notasCita">
+                    Notas
+                    <span class="opcional">(opcional)</span>
+                </label>
+
+                <textarea id="notasCita"
+                          placeholder="Añade detalles para esta cita"></textarea>
+
+            </div>
+
+            <!-- Mensaje para los errores de validación -->
+
+            <p id="errorFormulario" role="alert" hidden></p>
+
+            <!-- Botones inferiores del formulario -->
+
+            <div class="botonesFormulario">
+
+                <button id="cancelarNuevaCita"
+                        class="botonSecundario"
+                        type="button">
+                    Cancelar
+                </button>
+
+                <button id="guardarCita"
+                        class="botonPrincipal"
+                        type="submit">
+                    Guardar cita
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- PANTALLA DE DETALLE DE CITA -->
+
+    <section id="pantallaDetalleCita" hidden>
+
+        <header class="cabeceraDetalle">
+
+            <button id="volverDetalle"
+                    type="button"
+                    aria-label="Volver a la agenda">
+                ❮
+            </button>
+
+            <h1>Detalle de cita</h1>
+
+        </header>
+
+        <article class="datosDetalle">
+
+            <!-- Información principal de la cita -->
+
+            <div class="tituloDetalle">
+
+                <div class="recuadroIconoDetalle">
+
+                    <span id="iconoDetalle"
+                          aria-hidden="true"></span>
+
+                </div>
+
+                <div>
+
+                    <h2 id="nombreDetalle"></h2>
+
+                    <p id="categoriaDetalle"></p>
+
+                </div>
+
+            </div>
+
+            <!-- Datos de la cita seleccionada -->
+
+            <div class="filaDetalle">
+
+                <span>Fecha</span>
+
+                <strong id="fechaDetalle"></strong>
+
+            </div>
+
+            <div class="filaDetalle">
+
+                <span>Horario</span>
+
+                <strong id="horarioDetalle"></strong>
+
+            </div>
+
+            <div class="filaDetalle">
+
+                <span>Estado</span>
+
+                <strong id="estadoDetalle"></strong>
+
+            </div>
+
+            <div class="notasDetalle">
+
+                <h3>Notas</h3>
+
+                <p id="notasDetalle"></p>
+
+            </div>
+
+        </article>
+
+        <p id="errorDetalle" role="alert" hidden></p>
+
+        <!-- Acciones disponibles -->
+
+        <div class="accionesDetalle">
+
+            <button id="completarCita"
+                    class="botonPrincipal"
+                    type="button">
+                Completar cita
+            </button>
+
+            <button id="editarCita"
+                    class="botonSecundario"
+                    type="button">
+                Editar cita
+            </button>
+
+            <div class="accionesInferiores">
+
+                <button id="cancelarCita" type="button">
+                    Cancelar cita
+                </button>
+
+                <button id="eliminarCita" type="button">
+                    Eliminar cita
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Cargamos p5.js antes de ejecutar nuestro programa -->
+
+    <script src="librerias/p5.min.js"></script>
+    <script src="sketch.js"></script>
+
+</body>
+
+</html>
